@@ -237,6 +237,7 @@
   <script src="js/auth.js"></script>
   <script src="js/api.js"></script>
   <script src="js/main.js"></script>
+  <script src="js/barns.js"></script>
   
   <script>
     // Mobile menu toggle
@@ -354,6 +355,9 @@
         }, 2000);
         return;
       }
+      
+      // Load profiles for dropdown
+      await loadProfilesForDropdown();
       
       // Load barn form data
       await loadBarnForm();
