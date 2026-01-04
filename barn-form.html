@@ -251,7 +251,7 @@
     }
 
     // Load barn form data
-    async function loadBarnForm() {
+    async function loadBarnFormData() {
       const editBarnData = sessionStorage.getItem('editBarn');
       if (editBarnData) {
         try {
@@ -268,6 +268,7 @@
           document.getElementById('eggs_today').value = barn.eggs_today || '';
           document.getElementById('temperature').value = barn.temperature || '';
           document.getElementById('humidity').value = barn.humidity || '';
+          document.getElementById('profile-id').value = barn.profile_id || '';
           
           // Update save button text
           document.getElementById('save-btn-text').textContent = 'Update Barn';
@@ -283,60 +284,21 @@
 
     // Setup event listeners
     function setupEventListeners() {
-      // Form submission
-      const form = document.getElementById('barn-form');
-      if (form) {
-        form.addEventListener('submit', async (e) => {
-          e.preventDefault();
-          
-          const saveBtn = document.getElementById('save-btn');
-          const saveBtnText = document.getElementById('save-btn-text');
-          const saveBtnSpinner = document.getElementById('save-btn-spinner');
-          
-          // Show loading state
-          saveBtn.disabled = true;
-          saveBtnText.textContent = 'Saving...';
-          saveBtnSpinner.classList.remove('d-none');
-          
-          try {
-            // Get form data
-            const formData = new FormData(form);
-            const barnData = {
-              name: formData.get('name'),
-              status: formData.get('status'),
-              chickens: parseInt(formData.get('chickens')) || 0,
-              eggs_today: parseInt(formData.get('eggs_today')) || 0,
-              temperature: parseFloat(formData.get('temperature')) || null,
-              humidity: parseFloat(formData.get('humidity')) || null,
-              profile_id: getCurrentUserId()
-            };
-            
-            const barnId = formData.get('barn-id');
-            
-            if (barnId) {
-              // Update existing barn
-              await updateBarn(barnId, barnData);
-              showAlert('Barn updated successfully', 'success');
-            } else {
-              // Create new barn
-              await createBarn(barnData);
-              showAlert('Barn created successfully', 'success');
-            }
-            
-            // Redirect to barns page after a short delay
-            setTimeout(() => {
-              window.location.href = 'barns.html';
-            }, 1000);
-          } catch (error) {
-            console.error('Error saving barn:', error);
-            showAlert('Error saving barn: ' + error.message, 'danger');
-          } finally {
-            // Reset button state
-            saveBtn.disabled = false;
-            saveBtnText.textContent = barnId ? 'Update Barn' : 'Save Barn';
-            saveBtnSpinner.classList.add('d-none');
-          }
-        });
+      // Call the setupEventListeners function from barns.js
+      if (typeof setupEventListeners === 'function') {
+        // This will call the function from barns.js
+        // We need to use a different name to avoid recursion
+        setupBarnFormEventListeners();
+      }
+    }
+    
+    // Function to setup barn form event listeners from barns.js
+    function setupBarnFormEventListeners() {
+      // Barn form submission
+      const barnForm = document.getElementById('barn-form');
+      if (barnForm) {
+        console.log('Setting up form submission handler');
+        barnForm.addEventListener('submit', handleBarnFormSubmit);
       }
     }
 
@@ -360,29 +322,15 @@
       await loadProfilesForDropdown();
       
       // Load barn form data
-      await loadBarnForm();
+      await loadBarnFormData();
       
-      // Setup event listeners
+      // Setup event listeners from barns.js
       setupEventListeners();
       
       // Update user info
       updateUserInfo();
     });
 
-    // Custom form validation
-    (function() {
-      'use strict';
-      const forms = document.querySelectorAll('.needs-validation');
-      Array.from(forms).forEach(form => {
-        form.addEventListener('submit', event => {
-          if (!form.checkValidity()) {
-            event.preventDefault();
-            event.stopPropagation();
-          }
-          form.classList.add('was-validated');
-        }, false);
-      });
-    })();
   </script>
 </body>
 </html>

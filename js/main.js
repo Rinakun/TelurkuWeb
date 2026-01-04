@@ -122,14 +122,7 @@ function setupEventListeners() {
     });
   }
   
-  // Barn form submission
-  const barnForm = document.getElementById('barn-form');
-  if (barnForm) {
-    barnForm.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      await handleBarnFormSubmit();
-    });
-  }
+  // Barn form submission is handled in barns.js
   
   // Search input
   const searchInput = document.getElementById('search-input');
@@ -157,12 +150,17 @@ async function handleBarnFormSubmit() {
       temperature: parseFloat(formData.get('temperature')) || 0,
       humidity: parseFloat(formData.get('humidity')) || 0,
       status: formData.get('status') || 'ok',
-      profile_id: getCurrentUserId()
+      profile_id: formData.get('profile-id')
     };
     
     // Validate form data
     if (!barnData.name) {
       showAlert('Barn name is required', 'warning');
+      return;
+    }
+    
+    if (!barnData.profile_id) {
+      showAlert('Please select a profile', 'warning');
       return;
     }
     
@@ -220,6 +218,7 @@ function populateBarnForm(barn) {
   form.querySelector('[name="temperature"]').value = barn.temperature || 0;
   form.querySelector('[name="humidity"]').value = barn.humidity || 0;
   form.querySelector('[name="status"]').value = barn.status || 'ok';
+  form.querySelector('[name="profile-id"]').value = barn.profile_id || '';
 }
 
 // Update user info in UI

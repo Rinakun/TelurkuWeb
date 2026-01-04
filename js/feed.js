@@ -273,7 +273,10 @@ async function loadFeedForm() {
       await loadProfilesForDropdown();
       
       // Set profile
-      document.getElementById('profile-id').value = feed.profile_id || '';
+      const profileSelect = document.getElementById('profile-id');
+      if (profileSelect) {
+        profileSelect.value = feed.profile_id || '';
+      }
       
       // Fill form with feed data
       document.getElementById('feed-id').value = feed.id || '';
@@ -314,6 +317,9 @@ function setupFeedFormEventListeners() {
       const saveBtn = document.getElementById('save-btn');
       const saveBtnText = document.getElementById('save-btn-text');
       const saveBtnSpinner = document.getElementById('save-btn-spinner');
+      
+      // Prevent multiple submissions
+      if (saveBtn.disabled) return;
       
       // Show loading state
       saveBtn.disabled = true;

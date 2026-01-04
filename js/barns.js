@@ -239,72 +239,71 @@ function formatAuditDetails(entry) {
   return `Barn: ${data.name || 'N/A'}`;
 }
 
-// Load profiles for dropdown (for barn form)
-async function loadProfilesForDropdown() {
- try {
-   const profiles = await getProfiles();
-   const profileSelect = document.querySelector('[name="profile-id"]');
-   
-   if (!profileSelect) return;
-   
-   // Clear existing options except first one
-   while (profileSelect.children.length > 1) {
-     profileSelect.removeChild(profileSelect.lastChild);
-   }
-   
-   // Add "Select a profile" option
-   const defaultOption = document.createElement('option');
-   defaultOption.value = '';
-   defaultOption.textContent = 'Select a profile';
-   profileSelect.appendChild(defaultOption);
-   
-   profiles.forEach(profile => {
-     const option = document.createElement('option');
-     option.value = profile.id;
-     option.textContent = `${profile.name || profile.email}`;
-     profileSelect.appendChild(option);
-   });
- } catch (error) {
-   console.error('Error loading profiles:', error);
-   showAlert('Error loading profiles: ' + error.message, 'danger');
- }
-}
-
 // Handle barn form submission
-async function handleBarnFormSubmit() {
- try {
-   const formData = new FormData(document.getElementById('barn-form'));
-   const barnData = {
-     name: formData.get('name'),
-     chickens: parseInt(formData.get('chickens')) || 0,
-     eggs_today: parseInt(formData.get('eggs_today')) || 0,
-     temperature: parseFloat(formData.get('temperature')) || 0,
-     humidity: parseFloat(formData.get('humidity')) || 0,
-     status: formData.get('status') || 'ok',
-     profile_id: formData.get('profile-id')
-   };
-   
-   const barnId = formData.get('barn-id');
-   
-   if (barnId) {
-     // Update existing barn
-     await updateBarn(barnId, barnData);
-     showAlert('Barn updated successfully', 'success');
-   } else {
-     // Create new barn
-     await createBarn(barnData);
-     showAlert('Barn created successfully', 'success');
-   }
-   
-   // Clear form data from session
-   sessionStorage.removeItem('editBarn');
-   
-   // Redirect to barns list
-   window.location.href = 'barns.html';
- } catch (error) {
-   console.error('Error saving barn:', error);
-   showAlert('Error saving barn: ' + error.message, 'danger');
- }
+async function handleBarnFormSubmit(e) {
+  e.preventDefault();
+  
+  const saveBtn = document.getElementById('save-btn');
+  const saveBtnText = document.getElementById('save-btn-text');
+  const saveBtnSpinner = document.getElementById('save-btn-spinner');
+  
+  // Prevent multiple submissions
+  if (saveBtn.disabled) return;
+  
+  // Check if profile is selected
+  const profileId = document.getElementById('profile-id').value;
+  if (!profileId) {
+    showAlert('Please select a profile', 'warning');
+    return;
+  }
+  
+  // Show loading state
+  saveBtn.disabled = true;
+  saveBtnText.textContent = 'Saving...';
+  saveBtnSpinner.classList.remove('d-none');
+  
+  try {
+    const formData = new FormData(document.getElementById('barn-form'));
+    const barnData = {
+      name: formData.get('name'),
+      chickens: parseInt(formData.get('chickens')) || 0,
+      eggs_today: parseInt(formData.get('eggs_today')) || 0,
+      temperature: parseFloat(formData.get('temperature')) || 0,
+      humidity: parseFloat(formData.get('humidity')) || 0,
+      status: formData.get('status') || 'ok',
+      profile_id: profileId
+    };
+    
+    const barnId = formData.get('barn-id');
+    
+    console.log('Submitting barn data:', barnData);
+    
+    if (barnId) {
+      // Update existing barn
+      await updateBarn(barnId, barnData);
+      showAlert('Barn updated successfully', 'success');
+    } else {
+      // Create new barn
+      await createBarn(barnData);
+      showAlert('Barn created successfully', 'success');
+    }
+    
+    // Clear form data from session
+    sessionStorage.removeItem('editBarn');
+    
+    // Redirect to barns list after a short delay
+    setTimeout(() => {
+      window.location.href = 'barns.html';
+    }, 1000);
+  } catch (error) {
+    console.error('Error saving barn:', error);
+    showAlert('Error saving barn: ' + error.message, 'danger');
+  } finally {
+    // Reset button state
+    saveBtn.disabled = false;
+    saveBtnText.textContent = barnId ? 'Update Barn' : 'Save Barn';
+    saveBtnSpinner.classList.add('d-none');
+  }
 }
 
 // Setup event listeners
@@ -377,7 +376,10 @@ async function loadBarnForm() {
      await loadProfilesForDropdown();
      
      // Set profile
-     document.querySelector('[name="profile-id"]').value = barn.profile_id || '';
+     const profileSelect = document.querySelector('[name="profile-id"]');
+     if (profileSelect) {
+       profileSelect.value = barn.profile_id || '';
+     }
      
      // Fill form with barn data
      document.querySelector('[name="barn-id"]').value = barn.id || '';
