@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Telurku Admin Dashboard</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/components.css">
+</head>
+<body>
+  <!-- Mobile Menu Toggle -->
+  <button class="mobile-menu-toggle" id="mobile-menu-toggle">
+    <i class="bi bi-list"></i>
+  </button>
+
+  <!-- Sidebar Navigation -->
+  <nav class="sidebar" id="sidebar">
+    <div class="position-sticky pt-3">
+      <div class="text-center mb-4">
+        <i class="bi bi-egg-fried text-white" style="font-size: 2rem;"></i>
+        <h5 class="text-white mt-2">Telurku Admin</h5>
+      </div>
+      <ul class="nav flex-column">
+        <li class="nav-item">
+          <a class="nav-link active" href="index.html">
+            <i class="bi bi-house"></i> Dashboard
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="barns.html">
+            <i class="bi bi-building"></i> Barns
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="feed.html">
+            <i class="bi bi-basket"></i> Feed Management
+          </a>
+        </li>
+        <li class="nav-item admin-only">
+          <a class="nav-link" href="feed-form.html">
+            <i class="bi bi-plus-circle"></i> Add Feed
+          </a>
+        </li>
+        <li class="nav-item admin-only">
+          <a class="nav-link" href="barn-form.html">
+            <i class="bi bi-plus-circle"></i> Add Barn
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#" onclick="showComingSoon()">
+            <i class="bi bi-graph-up"></i> Reports
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#" onclick="showComingSoon()">
+            <i class="bi bi-gear"></i> Settings
+          </a>
+        </li>
+      </ul>
+      
+      <hr class="text-white-50">
+      
+      <div class="px-3">
+        <div class="text-white-50 small" id="user-info">Loading...</div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <main class="dashboard-content">
+    <!-- Top Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
+      <div class="container-fluid">
+        <span class="navbar-brand mb-0 h1">Dashboard</span>
+        <div class="navbar-nav ms-auto">
+          <button class="btn btn-outline-light btn-sm me-2" id="refresh-btn">
+            <i class="bi bi-arrow-clockwise"></i> Refresh
+          </button>
+          <div class="dropdown">
+            <button class="btn btn-outline-light btn-sm dropdown-toggle" type="button" id="userDropdown" data-bs-toggle="dropdown">
+              <i class="bi bi-person-circle"></i> Account
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end">
+              <li><a class="dropdown-item" href="#" onclick="showComingSoon()">Profile</a></li>
+              <li><hr class="dropdown-divider"></li>
+              <li><a class="dropdown-item" href="#" id="logout-btn">Logout</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Page Content -->
+    <div class="container-fluid px-4">
+      <!-- Page Header -->
+      <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+        <h1 class="h2">Dashboard</h1>
+        <div class="btn-toolbar mb-2 mb-md-0">
+          <div class="btn-group me-2">
+            <button type="button" class="btn btn-sm btn-outline-secondary" id="export-btn">
+              <i class="bi bi-download"></i> Export
+            </button>
+          </div>
+          <div class="btn-group">
+            <select class="form-select form-select-sm" id="date-range-filter">
+              <option value="today">Today</option>
+              <option value="week">This Week</option>
+              <option value="month" selected>This Month</option>
+              <option value="year">This Year</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Alert Container -->
+      <div id="alert-container"></div>
+
+      <!-- Dashboard Statistics -->
+      <div class="row dashboard-content">
+        <div class="col-xl-3 col-md-6 mb-4">
+          <div class="card border-left-primary shadow h-100 py-2 stats-card">
+            <div class="card-body">
+              <div class="row no-gutters align-items-center">
+                <div class="col mr-2">
+                  <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Total Barns</div>
+                  <div class="h5 mb-0 font-weight-bold text-gray-800 loading-placeholder" id="total-barns">
+                    <div class="spinner-border spinner-border-sm" role="status"></div>
+                  </div>
+                </div>
+                <div class="col-auto">
+                  <i class="bi bi-building fa-2x text-gray-300"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 mb-4">
+          <div class="card border-left-success shadow h-100 py-2 stats-card">
+            <div class="card-body">
+              <div class="row no-gutters align-items-center">
+                <div class="col mr-2">
+                  <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Total Chickens</div>
+                  <div class="h5 mb-0 font-weight-bold text-gray-800 loading-placeholder" id="total-chickens">
+                    <div class="spinner-border spinner-border-sm" role="status"></div>
+                  </div>
+                </div>
+                <div class="col-auto">
+                  <i class="bi bi-egg fa-2x text-gray-300"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 mb-4">
+          <div class="card border-left-info shadow h-100 py-2 stats-card">
+            <div class="card-body">
+              <div class="row no-gutters align-items-center">
+                <div class="col mr-2">
+                  <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Daily Egg Production</div>
+                  <div class="h5 mb-0 font-weight-bold text-gray-800 loading-placeholder" id="daily-eggs">
+                    <div class="spinner-border spinner-border-sm" role="status"></div>
+                  </div>
+                </div>
+                <div class="col-auto">
+                  <i class="bi bi-egg-fried fa-2x text-gray-300"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 mb-4">
+          <div class="card border-left-warning shadow h-100 py-2 stats-card">
+            <div class="card-body">
+              <div class="row no-gutters align-items-center">
+                <div class="col mr-2">
+                  <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Alerts</div>
+                  <div class="h5 mb-0 font-weight-bold text-gray-800 loading-placeholder" id="alerts">
+                    <div class="spinner-border spinner-border-sm" role="status"></div>
+                  </div>
+                </div>
+                <div class="col-auto">
+                  <i class="bi bi-exclamation-triangle fa-2x text-gray-300"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Charts Section -->
+      <div class="row dashboard-content">
+        <div class="col-xl-8 col-lg-7">
+          <div class="card shadow mb-4">
+            <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+              <h6 class="m-0 font-weight-bold text-primary">Egg Production Overview</h6>
+              <div class="dropdown no-arrow">
+                <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown">
+                  <i class="bi bi-three-dots-vertical"></i>
+                </a>
+                <div class="dropdown-menu dropdown-menu-right shadow">
+                  <a class="dropdown-item" href="#">Export Data</a>
+                  <a class="dropdown-item" href="#">View Details</a>
+                </div>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="chart-container">
+                <div id="activity-chart" class="chart-placeholder">
+                  <div class="text-center">
+                    <i class="bi bi-bar-chart-line" style="font-size: 3rem;"></i>
+                    <p class="mt-2">Activity chart coming soon</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-xl-4 col-lg-5">
+          <div class="card shadow mb-4">
+            <div class="card-header py-3">
+              <h6 class="m-0 font-weight-bold text-primary">Barn Status</h6>
+            </div>
+            <div class="card-body">
+              <div class="chart-container">
+                <div class="row text-center">
+                  <div class="col-4">
+                    <div class="mb-2">
+                      <i class="bi bi-check-circle text-success" style="font-size: 2rem;"></i>
+                    </div>
+                    <div class="small text-gray-500">OK</div>
+                    <div class="h5 mb-0 font-weight-bold text-gray-800" id="status-ok">0</div>
+                  </div>
+                  <div class="col-4">
+                    <div class="mb-2">
+                      <i class="bi bi-exclamation-triangle text-warning" style="font-size: 2rem;"></i>
+                    </div>
+                    <div class="small text-gray-500">Warning</div>
+                    <div class="h5 mb-0 font-weight-bold text-gray-800" id="status-warning">0</div>
+                  </div>
+                  <div class="col-4">
+                    <div class="mb-2">
+                      <i class="bi bi-x-circle text-danger" style="font-size: 2rem;"></i>
+                    </div>
+                    <div class="small text-gray-500">Alert</div>
+                    <div class="h5 mb-0 font-weight-bold text-gray-800" id="status-alert">0</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Recent Barns Table -->
+      <div class="card shadow mb-4 dashboard-content">
+        <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+          <h6 class="m-0 font-weight-bold text-primary">Recent Barns</h6>
+          <a href="barns.html" class="btn btn-sm btn-primary">View All</a>
+        </div>
+        <div class="card-body">
+          <div class="table-responsive">
+            <table class="table table-bordered" id="dashboard-barns-table">
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Chickens</th>
+                  <th>Eggs Today</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody id="dashboard-barns-tbody">
+                <tr>
+                  <td colspan="4" class="text-center">
+                    <div class="spinner-border spinner-border-sm" role="status"></div>
+                    Loading...
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container-fluid">
+      <div class="text-center">
+        <span>&copy; 2024 Telurku Admin Dashboard. All rights reserved.</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.7"></script>
+  <script src="config/supabase-config.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/main.js"></script>
+  <script src="js/dashboard.js"></script>
+  
+  <script>
+    // Mobile menu toggle
+    document.getElementById('mobile-menu-toggle').addEventListener('click', function() {
+      document.getElementById('sidebar').classList.toggle('show');
+    });
+
+    // Show coming soon alert
+    function showComingSoon() {
+      showAlert('This feature is coming soon!', 'info');
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Add Feed - Telurku Admin Dashboard</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/components.css">
+</head>
+<body>
+  <!-- Mobile Menu Toggle -->
+  <button class="mobile-menu-toggle" id="mobile-menu-toggle">
+    <i class="bi bi-list"></i>
+  </button>
+
+  <!-- Sidebar Navigation -->
+  <nav class="sidebar" id="sidebar">
+    <div class="position-sticky pt-3">
+      <div class="text-center mb-4">
+        <i class="bi bi-egg-fried text-white" style="font-size: 2rem;"></i>
+        <h5 class="text-white mt-2">Telurku Admin</h5>
+      </div>
+      <ul class="nav flex-column">
+        <li class="nav-item">
+          <a class="nav-link" href="index.html">
+            <i class="bi bi-house"></i> Dashboard
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="barns.html">
+            <i class="bi bi-building"></i> Barns
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link active" href="feed.html">
+            <i class="bi bi-basket"></i> Feed Management
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="feed-form.html">
+            <i class="bi bi-plus-circle"></i> Add Feed
+          </a>
+        </li>
+        <li class="nav-item admin-only">
+          <a class="nav-link" href="barn-form.html">
+            <i class="bi bi-plus-circle"></i> Add Barn
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#" onclick="showComingSoon()">
+            <i class="bi bi-graph-up"></i> Reports
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#" onclick="showComingSoon()">
+            <i class="bi bi-gear"></i> Settings
+          </a>
+        </li>
+      </ul>
+      
+      <hr class="text-white-50">
+      
+      <div class="px-3">
+        <div class="text-white-50 small" id="user-info">Loading...</div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <main>
+    <!-- Top Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
+      <div class="container-fluid">
+        <span class="navbar-brand mb-0 h1" id="page-title">Add New Feed Record</span>
+        <div class="navbar-nav ms-auto">
+          <button class="btn btn-outline-light btn-sm me-2" onclick="window.history.back()">
+            <i class="bi bi-arrow-left"></i> Back
+          </button>
+          <div class="dropdown">
+            <button class="btn btn-outline-light btn-sm dropdown-toggle" type="button" id="userDropdown" data-bs-toggle="dropdown">
+              <i class="bi bi-person-circle"></i> Account
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end">
+              <li><a class="dropdown-item" href="#" onclick="showComingSoon()">Profile</a></li>
+              <li><hr class="dropdown-divider"></li>
+              <li><a class="dropdown-item" href="#" id="logout-btn">Logout</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Page Content -->
+    <div class="container-fluid px-4">
+      <!-- Alert Container -->
+      <div id="alert-container"></div>
+
+      <!-- Feed Form -->
+      <div class="barn-form-container">
+        <form id="feed-form">
+          <input type="hidden" name="feed-id" id="feed-id">
+          
+          <!-- Profile Selection -->
+          <div class="form-section">
+            <h5 class="form-section-title">
+              <i class="bi bi-person"></i> Profile Selection
+            </h5>
+            <div class="row">
+              <div class="col-md-12">
+                <div class="mb-3">
+                  <label for="profile-id" class="form-label">Profile *</label>
+                  <select class="form-select" id="profile-id" name="profile-id" required>
+                    <option value="">Select a profile</option>
+                  </select>
+                  <div class="invalid-feedback">
+                    Please select a profile.
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Feed Information -->
+          <div class="form-section">
+            <h5 class="form-section-title">
+              <i class="bi bi-basket"></i> Feed Information
+            </h5>
+            <div class="row">
+              <div class="col-md-6">
+                <div class="mb-3">
+                  <label for="type" class="form-label">Feed Type *</label>
+                  <select class="form-select" id="type" name="type" required>
+                    <option value="">Select feed type</option>
+                    <option value="Pakan Layer">Pakan Layer</option>
+                    <option value="Pakan Starter">Pakan Starter</option>
+                    <option value="Pakan Grower">Pakan Grower</option>
+                    <option value="Pakan Finisher">Pakan Finisher</option>
+                  </select>
+                  <div class="invalid-feedback">
+                    Please select a feed type.
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="mb-3">
+                  <label for="amount" class="form-label">Amount (kg) *</label>
+                  <input type="number" class="form-control" id="amount" name="amount" min="0" step="0.1" required placeholder="0.0">
+                  <div class="form-text">Amount of feed in kilograms</div>
+                  <div class="invalid-feedback">
+                    Please provide a valid amount.
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-6">
+                <div class="mb-3">
+                  <label for="date" class="form-label">Date *</label>
+                  <input type="date" class="form-control" id="date" name="date" required>
+                  <div class="invalid-feedback">
+                    Please provide a valid date.
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="mb-3">
+                  <label for="device-id" class="form-label">Device ID</label>
+                  <input type="text" class="form-control" id="device-id" name="device-id" placeholder="Optional device identifier">
+                  <div class="form-text">Optional device or sensor ID</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Additional Information -->
+          <div class="form-section">
+            <h5 class="form-section-title">
+              <i class="bi bi-info-circle"></i> Additional Information
+            </h5>
+            <div class="row">
+              <div class="col-md-6">
+                <div class="mb-3">
+                  <label for="consumption-rate" class="form-label">Consumption Rate (kg/day)</label>
+                  <input type="number" class="form-control" id="consumption-rate" name="consumption-rate" min="0" step="0.1" placeholder="0.0">
+                  <div class="form-text">Daily consumption rate in kilograms</div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="mb-3">
+                  <label for="estimated-days" class="form-label">Estimated Days Remaining</label>
+                  <input type="number" class="form-control" id="estimated-days" name="estimated-days" min="0" placeholder="0">
+                  <div class="form-text">Estimated days until feed runs out</div>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-6">
+                <div class="mb-3">
+                  <label for="last-refill" class="form-label">Last Refill Date</label>
+                  <input type="date" class="form-control" id="last-refill" name="last-refill">
+                  <div class="form-text">Date when feed was last refilled</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Form Actions -->
+          <div class="form-section">
+            <div class="d-flex justify-content-between">
+              <button type="button" class="btn btn-secondary" onclick="window.history.back()">
+                <i class="bi bi-x-circle"></i> Cancel
+              </button>
+              <div>
+                <button type="reset" class="btn btn-outline-secondary me-2">
+                  <i class="bi bi-arrow-clockwise"></i> Reset
+                </button>
+                <button type="submit" class="btn btn-primary" id="save-btn">
+                  <i class="bi bi-check-circle"></i> <span id="save-btn-text">Save Feed</span>
+                  <span id="save-btn-spinner" class="spinner-border spinner-border-sm d-none" role="status"></span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container-fluid">
+      <div class="text-center">
+        <span>&copy; 2024 Telurku Admin Dashboard. All rights reserved.</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.7"></script>
+  <script src="config/supabase-config.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/main.js"></script>
+  <script src="js/feed.js"></script>
+  
+  <script>
+    // Mobile menu toggle
+    document.getElementById('mobile-menu-toggle').addEventListener('click', function() {
+      document.getElementById('sidebar').classList.toggle('show');
+    });
+
+    // Show coming soon alert
+    function showComingSoon() {
+      showAlert('This feature is coming soon!', 'info');
+    }
+
+    // Initialize page
+    document.addEventListener('DOMContentLoaded', async () => {
+      // Check authentication and admin access
+      const admin = await requireAdmin();
+      if (!admin) return;
+      
+      // Set today's date as default
+      const today = new Date().toISOString().split('T')[0];
+      document.getElementById('date').value = today;
+      
+      // Load feed form data (this includes setting up event listeners)
+      await loadFeedForm();
+      
+      // Update user info
+      updateUserInfo();
+    });
+
+    // Custom form validation
+    (function() {
+      'use strict';
+      const forms = document.querySelectorAll('.needs-validation');
+      Array.from(forms).forEach(form => {
+        form.addEventListener('submit', event => {
+          if (!form.checkValidity()) {
+            event.preventDefault();
+            event.stopPropagation();
+          }
+          form.classList.add('was-validated');
+        }, false);
+      });
+    })();
+  </script>
+</body>
+</html>
