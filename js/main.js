@@ -110,16 +110,22 @@ function updateRecentBarnsTable(barns) {
 function setupEventListeners() {
   // Logout button
   const logoutBtn = document.getElementById('logout-btn');
+  console.log('Looking for logout button with ID: logout-btn');
   if (logoutBtn) {
+    console.log('Logout button found, adding event listener');
     logoutBtn.addEventListener('click', async () => {
+      console.log('Logout button clicked');
       try {
         await logout();
+        console.log('Logout successful, redirecting to login.html');
         window.location.href = 'login.html';
       } catch (error) {
         console.error('Logout error:', error);
         showAlert('Error during logout: ' + error.message, 'danger');
       }
     });
+  } else {
+    console.log('Logout button not found');
   }
   
   // Barn form submission is handled in barns.js

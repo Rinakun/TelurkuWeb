@@ -5,7 +5,10 @@ async function getBarns() {
   try {
     const { data, error } = await supabase
       .from('barns')
-      .select('*')
+      .select(`
+        *,
+        profiles(name, email)
+      `)
       .order('created_at', { ascending: false });
       
     if (error) throw error;
@@ -113,7 +116,10 @@ async function searchBarns(searchTerm) {
   try {
     const { data, error } = await supabase
       .from('barns')
-      .select('*')
+      .select(`
+        *,
+        profiles(name, email)
+      `)
       .ilike('name', `%${searchTerm}%`)
       .order('created_at', { ascending: false });
       
@@ -130,7 +136,10 @@ async function filterBarnsByStatus(status) {
   try {
     const { data, error } = await supabase
       .from('barns')
-      .select('*')
+      .select(`
+        *,
+        profiles(name, email)
+      `)
       .eq('status', status)
       .order('created_at', { ascending: false });
       

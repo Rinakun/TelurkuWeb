@@ -9,7 +9,7 @@ function renderBarnsTable(barns) {
   
   if (barns.length === 0) {
     const row = document.createElement('tr');
-    row.innerHTML = `<td colspan="7" class="text-center">No barns found</td>`;
+    row.innerHTML = `<td colspan="8" class="text-center">No barns found</td>`;
     tableBody.appendChild(row);
     return;
   }
@@ -17,6 +17,7 @@ function renderBarnsTable(barns) {
   barns.forEach(barn => {
     const row = document.createElement('tr');
     row.innerHTML = `
+      <td>${barn.profiles?.name || barn.profiles?.email || 'Unknown'}</td>
       <td>${barn.name}</td>
       <td>${barn.chickens || 0}</td>
       <td>${barn.eggs_today || 0}</td>
